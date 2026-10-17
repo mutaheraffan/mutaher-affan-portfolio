@@ -707,18 +707,20 @@ button { cursor: pointer; }
   box-shadow: var(--shadow-accent);
 }
 
-/* Scroll Down Indicator */
+/* Scroll Down Indicator - Right Aligned */
 .scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  right: var(--space-xl);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
-  margin-top: var(--space-2xl);
   text-decoration: none;
   cursor: pointer;
   transition: transform var(--transition-base), opacity var(--transition-base);
   animation: fadeInUp 0.8s ease-out 1.2s both;
-  z-index: 5;
+  z-index: 10;
 }
 
 .scroll-indicator:hover {
@@ -1800,6 +1802,7 @@ button { cursor: pointer; }
   .footer-bottom { flex-direction: column; text-align: center; }
 
   .scroll-to-top { bottom: 20px; right: 20px; width: 42px; height: 42px; }
+  .scroll-indicator { right: var(--space-lg); bottom: 24px; }
 }
 
 /* -----------------------------------------
@@ -1824,12 +1827,13 @@ button { cursor: pointer; }
   .btn-primary, .btn-outline { padding: 12px 24px; font-size: var(--fs-sm); }
   .skill-category { padding: var(--space-lg); }
 
+  .avatar-frame,
   .avatar-placeholder { width: 110px; height: 110px; }
   .avatar-ring { width: 126px; height: 126px; }
   .avatar-initials { font-size: var(--fs-2xl); }
 
-  .about-avatar-frame { width: 140px; height: 140px; }
-  .about-avatar-ring { width: 154px; height: 154px; }
+  .scroll-indicator { right: var(--space-md); bottom: 18px; }
+  .scroll-text { display: none; } /* keep compact mouse + arrow on small mobile screens */
 
   .footer-nav ul { flex-direction: column; gap: var(--space-sm); }
 }
