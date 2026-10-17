@@ -535,6 +535,9 @@ button { cursor: pointer; }
   margin: 0 auto;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   animation: fadeInUp 1s ease-out;
 }
 
@@ -542,13 +545,13 @@ button { cursor: pointer; }
 .hero-avatar {
   display: inline-block;
   position: relative;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
 }
 
 .avatar-frame,
 .avatar-placeholder {
-  width: 140px;
-  height: 140px;
+  width: 135px;
+  height: 135px;
   border-radius: 50%;
   background: var(--bg-card);
   display: flex;
@@ -589,17 +592,17 @@ button { cursor: pointer; }
   position: absolute;
   top: -8px; left: 50%;
   transform: translateX(-50%);
-  width: 156px; height: 156px;
+  width: 151px; height: 151px;
   border-radius: 50%;
-  border: 2px dashed rgba(0,212,170,0.2);
+  border: 2px dashed rgba(0,212,170,0.25);
   animation: rotate 20s linear infinite;
 }
 
 /* Greeting */
 .hero-greeting {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-md);
   color: var(--text-secondary);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-xs);
   font-weight: 400;
   animation: fadeInUp 0.8s ease-out 0.3s both;
 }
@@ -611,10 +614,10 @@ button { cursor: pointer; }
 
 /* Name */
 .hero-name {
-  font-size: var(--fs-6xl);
+  font-size: var(--fs-5xl);
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xs);
   letter-spacing: -0.03em;
   animation: fadeInUp 0.8s ease-out 0.4s both;
 }
@@ -625,9 +628,9 @@ button { cursor: pointer; }
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
-  font-size: var(--fs-xl);
-  min-height: 2.5em;
+  margin-bottom: var(--space-md);
+  font-size: var(--fs-lg);
+  min-height: 2em;
   animation: fadeInUp 0.8s ease-out 0.5s both;
 }
 
@@ -660,8 +663,8 @@ button { cursor: pointer; }
   font-size: var(--fs-md);
   color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto var(--space-2xl);
-  line-height: 1.8;
+  margin: 0 auto var(--space-lg);
+  line-height: 1.7;
   animation: fadeInUp 0.8s ease-out 0.6s both;
 }
 
@@ -672,7 +675,7 @@ button { cursor: pointer; }
   justify-content: center;
   gap: var(--space-lg);
   flex-wrap: wrap;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-lg);
   animation: fadeInUp 0.8s ease-out 0.7s both;
 }
 
@@ -682,19 +685,20 @@ button { cursor: pointer; }
   align-items: center;
   justify-content: center;
   gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
   animation: fadeInUp 0.8s ease-out 0.8s both;
 }
 
 .social-link {
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   transition: all var(--transition-base);
 }
@@ -707,25 +711,21 @@ button { cursor: pointer; }
   box-shadow: var(--shadow-accent);
 }
 
-/* Scroll Down Indicator - Perfectly Centered at Bottom */
+/* Scroll Down Indicator - Guaranteed Zero-Overlap */
 .scroll-indicator {
-  position: absolute;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
+  margin-top: var(--space-sm);
   text-decoration: none;
   cursor: pointer;
   transition: transform var(--transition-base), opacity var(--transition-base);
   animation: fadeInUp 0.8s ease-out 1.2s both;
-  z-index: 10;
 }
 
 .scroll-indicator:hover {
-  transform: translateX(-50%) translateY(4px);
+  transform: translateY(4px);
 }
 
 .scroll-text {
@@ -1803,7 +1803,6 @@ button { cursor: pointer; }
   .footer-bottom { flex-direction: column; text-align: center; }
 
   .scroll-to-top { bottom: 20px; right: 20px; width: 42px; height: 42px; }
-  .scroll-indicator { bottom: 20px; }
 }
 
 /* -----------------------------------------
@@ -1833,7 +1832,6 @@ button { cursor: pointer; }
   .avatar-ring { width: 126px; height: 126px; }
   .avatar-initials { font-size: var(--fs-2xl); }
 
-  .scroll-indicator { bottom: 14px; }
   .scroll-text { display: none; } /* keep compact mouse + arrow on small mobile screens */
 
   .footer-nav ul { flex-direction: column; gap: var(--space-sm); }
