@@ -707,15 +707,16 @@ button { cursor: pointer; }
   box-shadow: var(--shadow-accent);
 }
 
-/* Scroll Down Indicator - Right Aligned */
+/* Scroll Down Indicator - Perfectly Centered at Bottom */
 .scroll-indicator {
   position: absolute;
-  bottom: 30px;
-  right: var(--space-xl);
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 5px;
   text-decoration: none;
   cursor: pointer;
   transition: transform var(--transition-base), opacity var(--transition-base);
@@ -724,7 +725,7 @@ button { cursor: pointer; }
 }
 
 .scroll-indicator:hover {
-  transform: translateY(4px);
+  transform: translateX(-50%) translateY(4px);
 }
 
 .scroll-text {
@@ -1802,7 +1803,7 @@ button { cursor: pointer; }
   .footer-bottom { flex-direction: column; text-align: center; }
 
   .scroll-to-top { bottom: 20px; right: 20px; width: 42px; height: 42px; }
-  .scroll-indicator { right: var(--space-lg); bottom: 24px; }
+  .scroll-indicator { bottom: 20px; }
 }
 
 /* -----------------------------------------
@@ -1832,7 +1833,7 @@ button { cursor: pointer; }
   .avatar-ring { width: 126px; height: 126px; }
   .avatar-initials { font-size: var(--fs-2xl); }
 
-  .scroll-indicator { right: var(--space-md); bottom: 18px; }
+  .scroll-indicator { bottom: 14px; }
   .scroll-text { display: none; } /* keep compact mouse + arrow on small mobile screens */
 
   .footer-nav ul { flex-direction: column; gap: var(--space-sm); }
