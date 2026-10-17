@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://mutaheraffan.com/sitemap.xml
+Sitemap: https://mutaheraffan.github.io/mutaher-affan-portfolio/sitemap.xml
 
 # Portfolio Website - Mutaher Affan
 # Senior Software Engineer | FinTech & Digital Payments
