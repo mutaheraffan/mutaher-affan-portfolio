@@ -854,4 +854,3 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.skill-tag').forEach((el) => el.classList.add('animated'));
   }
 });
-});
