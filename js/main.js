@@ -6,6 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
   // ============================================================
   // 1. PRELOADER — fade out after page load
@@ -78,115 +79,328 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 3. INTERACTIVE CHARACTER — Waving on Entry & Pointer Tracking
+  // 3. INTERACTIVE CHARACTER + RESUME-BOUND AI CHATBOT
   // ============================================================
+  const assistantRoot = document.getElementById('ai-assistant-root');
   const mascot = document.getElementById('cyber-mascot');
   const pupils = document.getElementById('mascot-pupils');
   const mascotHead = document.getElementById('mascot-head');
-  const mascotSpeech = document.getElementById('mascot-speech');
+  const mascotSpeechText = document.getElementById('mascot-speech-text');
   const mascotMouth = document.getElementById('mascot-mouth');
 
-  if (mascot && pupils && mascotHead) {
-    const greetings = [
-      "Hi! Welcome to Mutaher's Space 👋",
-      "Building FinTech & ISO 20022 Rails 🚀",
-      "Looking for a Backend Architect? 💻",
-      "Let's connect in the Contact section! ✨",
-    ];
-    let greetingIdx = 0;
+  const chatWindow = document.getElementById('resume-chat-window');
+  const chatCloseBtn = document.getElementById('chat-close-btn');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatForm = document.getElementById('chat-form');
+  const chatInput = document.getElementById('chat-input');
+  const quickChips = document.querySelectorAll('.chat-chip');
 
-    // Trigger wave + speech bubble
-    const triggerMascotWave = (customText) => {
-      if (customText && mascotSpeech) {
-        mascotSpeech.textContent = customText;
-      }
-      mascot.classList.remove('is-waving');
-      void mascot.offsetWidth; // Force reflow to restart animation
-      mascot.classList.add('is-waving', 'show-speech');
+  // Structured Resume Knowledge Base (Synced with Mutaher Affan's Portfolio)
+  const RESUME_DATA = {
+    name: 'Mutaher Affan',
+    title: 'Senior Software Engineer | Consultant — App Development',
+    location: 'Karachi, Pakistan',
+    experienceYears: '4+ Years',
+    education: 'Bachelor degree from University of Sindh',
+    email: 'mutaheraffan@gmail.com',
+    linkedin: 'https://linkedin.com/in/mutaher-affan',
+    github: 'https://github.com/mutaher-affan',
+    resumePdf: 'documents/resume.pdf',
+    currentRole: {
+      role: 'Consultant — App Development',
+      company: 'Systems Limited',
+      period: 'Feb 2026 — Present',
+      details: 'Currently engaged with CelcomDigi (leading Malaysian telecommunications and digital services company), building scalable Java microservices and Keycloak identity management solutions.',
+    },
+    previousRoles: [
+      'Senior Software Engineer at Paysys Labs (Sep 2025 – Feb 2026)',
+      'Software Engineer at Paysys Labs (Jan 2025 – Sep 2025)',
+      'Associate Software Engineer at Paysys Labs (Dec 2022 – Jan 2025)',
+      'Software Design Engineer at Teresol Pvt. Ltd. (Mar 2022 – Dec 2022)',
+      'Django Developer at GBS (Feb 2021 – May 2021)',
+    ],
+  };
 
-      if (mascotMouth) {
-        mascotMouth.setAttribute('d', 'M 88 90 Q 100 104 112 90');
-      }
+  // Intelligent Resume Intent Matcher
+  const generateResumeReply = (rawQuery) => {
+    const q = rawQuery.toLowerCase().trim();
 
-      setTimeout(() => {
-        mascot.classList.remove('is-waving');
-        if (mascotMouth) {
-          mascotMouth.setAttribute('d', 'M 91 92 Q 100 100 109 92');
-        }
-      }, 2800);
+    // 1. Greeting
+    if (/^(hi|hello|hey|salam|assalam|good morning|good evening)\b/.test(q)) {
+      return `Hello! 👋 I'm Mutaher's AI Resume Assistant. You can ask me about his <strong>4+ years of experience</strong>, his current work at <strong>Systems Limited (CelcomDigi)</strong>, his <strong>FinTech &amp; ISO 20022 projects in Ethiopia &amp; Pakistan</strong>, or his <strong>Java/Spring Boot</strong> expertise!`;
+    }
 
-      setTimeout(() => {
-        mascot.classList.remove('show-speech');
-      }, 4500);
-    };
+    // 2. Current Role / Systems Limited / CelcomDigi / Malaysia
+    if (q.includes('current') || q.includes('now') || q.includes('systems limited') || q.includes('celcom') || q.includes('malaysia') || q.includes('present')) {
+      return `Mutaher is currently working at <strong>Systems Limited</strong> as a <strong>Consultant — App Development</strong> (Feb 2026 – Present) in Karachi.<br><br>He is engaged with <strong>CelcomDigi</strong>, a premier Malaysian telecom &amp; digital services company, developing backend services with <strong>Java, Microservices, and Keycloak</strong>.`;
+    }
 
-    // Wave automatically when user enters the website
+    // 3. Ethiopia / EthSwitch / RTGS / ISO 20022 / Payment Standards
+    if (q.includes('ethiopia') || q.includes('ethswitch') || q.includes('rtgs') || q.includes('20022') || q.includes('8583') || q.includes('pacs') || q.includes('fintech') || q.includes('payment') || q.includes('ips')) {
+      return `Mutaher is a <strong>FinTech &amp; Digital Payments specialist</strong> with deep hands-on experience in <strong>ISO 20022</strong> and <strong>ISO 8583</strong>:<br><br>
+      &bull; <strong>EthSwitch IPS (Onsite in Ethiopia):</strong> Integrated the Instant Payment System with Ethiopian payment rails using ISO 20022 PACS messages for real-time P2P &amp; P2M transactions.<br>
+      &bull; <strong>National Bank of Ethiopia (RTGS Open Connect):</strong> Spearheaded the ISO 20022 migration utility which launched <em>ahead of schedule</em>.<br>
+      &bull; <strong>Pakistan Banking (NBP, CDNS, PayVay PSO):</strong> Built high-throughput payment middleware and integration layers at Paysys Labs.`;
+    }
+
+    // 4.Paysys Labs / Past Experience / Career History
+    if (q.includes('experience') || q.includes('work') || q.includes('history') || q.includes('career') || q.includes('paysys') || q.includes('teresol') || q.includes('gbs') || q.includes('companies') || q.includes('years')) {
+      return `Mutaher has <strong>${RESUME_DATA.experienceYears}</strong> of software engineering experience across 3+ countries:<br><br>
+      1. <strong>Systems Limited</strong> — Consultant, App Dev (Feb 2026 – Present)<br>
+      2. <strong>Paysys Labs</strong> — Promoted from Associate SE &rarr; SE &rarr; <strong>Senior Software Engineer</strong> (Dec 2022 – Feb 2026)<br>
+      3. <strong>Teresol Pvt. Ltd.</strong> — Software Design Engineer (Mar 2022 – Dec 2022)<br>
+      4. <strong>GBS</strong> — Django Developer (Feb 2021 – May 2021)`;
+    }
+
+    // 5. Technical Skills / Stack / Java / Spring / Databases / DevOps
+    if (q.includes('skill') || q.includes('stack') || q.includes('tech') || q.includes('java') || q.includes('spring') || q.includes('quarkus') || q.includes('python') || q.includes('database') || q.includes('docker') || q.includes('keycloak')) {
+      return `Here is Mutaher's core technical stack:<br><br>
+      &bull; <strong>Languages:</strong> Java, Python, JavaScript, SQL<br>
+      &bull; <strong>Frameworks:</strong> Spring Boot, Quarkus, Spring Security, Django, VueJS<br>
+      &bull; <strong>Payments &amp; FinTech:</strong> ISO 8583, ISO 20022, PACS Messaging, IPS &amp; RTGS<br>
+      &bull; <strong>Databases &amp; Caching:</strong> PostgreSQL, MySQL, Redis<br>
+      &bull; <strong>DevOps &amp; Auth:</strong> Docker, Keycloak, ELK Stack, Prometheus, Grafana, JUnit5, Mockito`;
+    }
+
+    // 6. Projects
+    if (q.includes('project') || q.includes('built') || q.includes('portfolio') || q.includes('nbp') || q.includes('cdns') || q.includes('payvay')) {
+      return `Mutaher's flagship production projects include:<br><br>
+      1. <strong>EthSwitch IPS Integration (Ethiopia):</strong> National switch real-time P2P/P2M payments via ISO 20022.<br>
+      2. <strong>RTGS Open Connect Utility:</strong> National Bank of Ethiopia ISO 20022 migration.<br>
+      3. <strong>NBP, CDNS &amp; PayVay PSO (Pakistan):</strong> Core digital banking middleware, Spring Security modernization &amp; Redis caching.<br>
+      4. <strong>CelcomDigi (Malaysia):</strong> Telecom digital services &amp; Keycloak IAM integration.`;
+    }
+
+    // 7. Education / University
+    if (q.includes('education') || q.includes('university') || q.includes('degree') || q.includes('study') || q.includes('sindh') || q.includes('college')) {
+      return `Mutaher is an alumnus of the <strong>University of Sindh</strong> and is based in <strong>Karachi, Pakistan</strong>.`;
+    }
+
+    // 8. Contact / Hire / Email / Resume PDF / Location
+    if (q.includes('contact') || q.includes('hire') || q.includes('email') || q.includes('reach') || q.includes('resume') || q.includes('cv') || q.includes('linkedin') || q.includes('location') || q.includes('karachi')) {
+      return `You can reach or hire Mutaher directly via:<br><br>
+      📧 <strong>Email:</strong> <a href="mailto:${RESUME_DATA.email}">${RESUME_DATA.email}</a><br>
+      💼 <strong>LinkedIn:</strong> <a href="${RESUME_DATA.linkedin}" target="_blank" rel="noopener">linkedin.com/in/mutaher-affan</a><br>
+      💻 <strong>GitHub:</strong> <a href="${RESUME_DATA.github}" target="_blank" rel="noopener">github.com/mutaher-affan</a><br>
+      📄 <strong>Resume:</strong> <a href="${RESUME_DATA.resumePdf}" download="Mutaher-Affan-Resume.pdf">Download PDF Resume</a>`;
+    }
+
+    // 9. Smart Fallback Summary
+    return `Here's a quick summary of <strong>Mutaher Affan</strong>:<br><br>
+    He is a <strong>Senior Software Engineer &amp; Consultant at Systems Limited</strong> with <strong>4+ years of experience</strong> specializing in <strong>Java (Spring Boot, Quarkus), FinTech, ISO 8583 &amp; ISO 20022</strong> across Pakistan, Ethiopia, and Malaysia.<br><br>
+    Try asking about his <strong>projects</strong>, <strong>payment standards</strong>, <strong>work history</strong>, or <a href="${RESUME_DATA.resumePdf}" download="Mutaher-Affan-Resume.pdf">download his full Resume PDF</a>!`;
+  };
+
+  // Wave & Speech Bubble Control
+  const triggerMascotWave = (customText) => {
+    if (!mascot) return;
+    if (customText && mascotSpeechText) {
+      mascotSpeechText.textContent = customText;
+    }
+    mascot.classList.remove('is-waving');
+    void mascot.offsetWidth;
+    mascot.classList.add('is-waving', 'show-speech');
+
+    if (mascotMouth) {
+      mascotMouth.setAttribute('d', 'M 88 90 Q 100 104 112 90');
+    }
+
     setTimeout(() => {
-      triggerMascotWave(greetings[0]);
-    }, 900);
+      mascot.classList.remove('is-waving');
+      if (mascotMouth) {
+        mascotMouth.setAttribute('d', 'M 91 92 Q 100 100 109 92');
+      }
+    }, 2800);
 
-    // Wave and cycle message on click or keyboard enter
-    mascot.addEventListener('click', () => {
-      greetingIdx = (greetingIdx + 1) % greetings.length;
-      triggerMascotWave(greetings[greetingIdx]);
-    });
+    setTimeout(() => {
+      mascot.classList.remove('show-speech');
+    }, 5500);
+  };
 
+  // Wave automatically on page entry
+  setTimeout(() => {
+    triggerMascotWave("Hi! Ask me about Mutaher's Resume 👋");
+  }, 850);
+
+  // Toggle Chat Window open/close
+  const toggleChatWindow = (forceState) => {
+    if (!assistantRoot || !chatWindow || !mascot) return;
+    const willOpen =
+      typeof forceState === 'boolean'
+        ? forceState
+        : !assistantRoot.classList.contains('chat-open');
+
+    assistantRoot.classList.toggle('chat-open', willOpen);
+    chatWindow.setAttribute('aria-hidden', String(!willOpen));
+    mascot.setAttribute('aria-expanded', String(willOpen));
+
+    if (willOpen) {
+      triggerMascotWave();
+      setTimeout(() => {
+        if (chatInput && !isTouchDevice) chatInput.focus();
+      }, 250);
+    }
+  };
+
+  if (mascot) {
+    mascot.addEventListener('click', () => toggleChatWindow());
     mascot.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        greetingIdx = (greetingIdx + 1) % greetings.length;
-        triggerMascotWave(greetings[greetingIdx]);
+        toggleChatWindow();
       }
     });
+  }
 
-    // Real-time Cursor / Pointer Direction Tracking
-    if (!prefersReducedMotion.matches) {
-      let mouseX = window.innerWidth / 2;
-      let mouseY = window.innerHeight / 2;
-      let rafPending = false;
+  if (chatCloseBtn) {
+    chatCloseBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleChatWindow(false);
+    });
+  }
 
-      const updateMascotLook = () => {
-        rafPending = false;
-        const rect = mascot.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height * 0.42; // Eye level
-
-        const deltaX = mouseX - centerX;
-        const deltaY = mouseY - centerY;
-        const angle = Math.atan2(deltaY, deltaX);
-        const distance = Math.min(Math.hypot(deltaX, deltaY) / 35, 5.5);
-
-        const pupilX = Math.cos(angle) * distance;
-        const pupilY = Math.sin(angle) * distance;
-
-        // Move pupils toward pointer
-        pupils.style.transform = `translate(${pupilX.toFixed(2)}px, ${pupilY.toFixed(2)}px)`;
-
-        // Subtle head tilt & shift toward pointer
-        const headShiftX = Math.max(-4, Math.min(4, deltaX / 90));
-        const headShiftY = Math.max(-3, Math.min(3, deltaY / 90));
-        const headTilt = Math.max(-5, Math.min(5, deltaX / 140));
-
-        mascotHead.style.transform = `translate(${headShiftX.toFixed(2)}px, ${headShiftY.toFixed(2)}px) rotate(${headTilt.toFixed(2)}deg)`;
-      };
-
-      window.addEventListener(
-        'mousemove',
-        (e) => {
-          mouseX = e.clientX;
-          mouseY = e.clientY;
-          if (!rafPending) {
-            rafPending = true;
-            requestAnimationFrame(updateMascotLook);
-          }
-        },
-        { passive: true }
-      );
+  // Close chat on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && assistantRoot && assistantRoot.classList.contains('chat-open')) {
+      toggleChatWindow(false);
     }
+  });
+
+  // Append Message Helper
+  const appendChatMessage = (htmlContent, sender = 'bot') => {
+    if (!chatMessages) return;
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chat-msg chat-msg--${sender}`;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    msgDiv.innerHTML = `
+      <div class="chat-msg-bubble">${htmlContent}</div>
+      <span class="chat-msg-time">${timeStr}</span>
+    `;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  };
+
+  // Handle User Question & Typing Indicator
+  const handleUserQuestion = (questionText) => {
+    if (!questionText || !questionText.trim()) return;
+    const cleanQuestion = questionText.trim();
+
+    // Render user bubble safely
+    const escapedUserText = cleanQuestion
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    appendChatMessage(escapedUserText, 'user');
+
+    // Show typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'chat-msg chat-msg--bot';
+    typingIndicator.innerHTML = `
+      <div class="chat-msg-bubble">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    `;
+    chatMessages.appendChild(typingIndicator);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Mascot waves happily while answering
+    triggerMascotWave();
+
+    setTimeout(() => {
+      typingIndicator.remove();
+      const answerHtml = generateResumeReply(cleanQuestion);
+      appendChatMessage(answerHtml, 'bot');
+    }, 520);
+  };
+
+  if (chatForm && chatInput) {
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const query = chatInput.value;
+      chatInput.value = '';
+      handleUserQuestion(query);
+    });
+  }
+
+  quickChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const query = chip.getAttribute('data-query');
+      handleUserQuestion(query);
+    });
+  });
+
+  // Real-time Cursor AND Mobile Touch Direction Tracking for Character
+  if (mascot && pupils && mascotHead && !prefersReducedMotion.matches) {
+    let pointerX = window.innerWidth / 2;
+    let pointerY = window.innerHeight / 2;
+    let rafPending = false;
+
+    const updateMascotLook = () => {
+      rafPending = false;
+      const rect = mascot.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height * 0.42;
+
+      const deltaX = pointerX - centerX;
+      const deltaY = pointerY - centerY;
+      const angle = Math.atan2(deltaY, deltaX);
+      const distance = Math.min(Math.hypot(deltaX, deltaY) / 35, 5.5);
+
+      const pupilX = Math.cos(angle) * distance;
+      const pupilY = Math.sin(angle) * distance;
+
+      pupils.style.transform = `translate(${pupilX.toFixed(2)}px, ${pupilY.toFixed(2)}px)`;
+
+      const headShiftX = Math.max(-4, Math.min(4, deltaX / 90));
+      const headShiftY = Math.max(-3, Math.min(3, deltaY / 90));
+      const headTilt = Math.max(-5, Math.min(5, deltaX / 140));
+
+      mascotHead.style.transform = `translate(${headShiftX.toFixed(2)}px, ${headShiftY.toFixed(2)}px) rotate(${headTilt.toFixed(2)}deg)`;
+    };
+
+    const scheduleLookUpdate = (x, y) => {
+      pointerX = x;
+      pointerY = y;
+      if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(updateMascotLook);
+      }
+    };
+
+    // Desktop Mouse Tracking
+    window.addEventListener(
+      'mousemove',
+      (e) => scheduleLookUpdate(e.clientX, e.clientY),
+      { passive: true }
+    );
+
+    // Mobile Touch Tracking (character looks where user taps/scrolls)
+    window.addEventListener(
+      'touchmove',
+      (e) => {
+        if (e.touches && e.touches[0]) {
+          scheduleLookUpdate(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      'touchstart',
+      (e) => {
+        if (e.touches && e.touches[0]) {
+          scheduleLookUpdate(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      },
+      { passive: true }
+    );
   }
 
   // ============================================================
-  // 4. HERO FINTECH PARTICLE CONSTELLATION (Canvas)
+  // 4. HERO FINTECH PARTICLE CONSTELLATION (Responsive Canvas)
   // ============================================================
   const particlesContainer = document.querySelector('.hero-particles');
 
@@ -201,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let width = (canvas.width = particlesContainer.offsetWidth);
     let height = (canvas.height = particlesContainer.offsetHeight);
 
-    const pointer = { x: null, y: null, radius: 130 };
+    const pointer = { x: null, y: null, radius: isTouchDevice ? 90 : 130 };
 
     window.addEventListener(
       'mousemove',
@@ -227,12 +441,14 @@ document.addEventListener('DOMContentLoaded', () => {
       { passive: true }
     );
 
-    const particleCount = Math.min(55, Math.floor((width * height) / 18000));
+    // Fewer particles on mobile for 60fps battery-friendly performance
+    const maxNodes = isTouchDevice ? 26 : 55;
+    const particleCount = Math.min(maxNodes, Math.floor((width * height) / 18000));
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.55,
-      vy: (Math.random() - 0.5) * 0.55,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
       size: Math.random() * 2 + 1,
       color: Math.random() > 0.35 ? '#00d4aa' : '#7b68ee',
     }));
@@ -248,24 +464,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (p.x < 0 || p.x > width) p.vx *= -1;
         if (p.y < 0 || p.y > height) p.vy *= -1;
 
-        // Draw node
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = 0.55;
         ctx.fill();
 
-        // Connect nearby nodes
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const dist = Math.hypot(dx, dy);
+          const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
 
-          if (dist < 125) {
+          if (dist < 120) {
             ctx.beginPath();
             ctx.strokeStyle = '#00d4aa';
-            ctx.globalAlpha = (1 - dist / 125) * 0.18;
+            ctx.globalAlpha = (1 - dist / 120) * 0.18;
             ctx.lineWidth = 1;
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
@@ -273,11 +485,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        // Connect to mouse pointer
         if (pointer.x !== null && pointer.y !== null) {
-          const dx = p.x - pointer.x;
-          const dy = p.y - pointer.y;
-          const dist = Math.hypot(dx, dy);
+          const dist = Math.hypot(p.x - pointer.x, p.y - pointer.y);
           if (dist < pointer.radius) {
             ctx.beginPath();
             ctx.strokeStyle = '#00d4aa';
@@ -296,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 5. DYNAMIC SCROLL-TRIGGERED REVEALS (Auto-Attached)
+  // 5. DYNAMIC SCROLL-TRIGGERED REVEALS
   // ============================================================
   const autoRevealSelectors = [
     '.section-header',
@@ -314,8 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const items = document.querySelectorAll(selector);
     items.forEach((el, index) => {
       el.classList.add('reveal-item');
-      // Stagger items within grids
-      const delay = (index % 4) * 90;
+      const delay = (index % 4) * 80;
       el.style.transitionDelay = `${delay}ms`;
     });
   });
@@ -332,35 +540,33 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
     );
 
     revealElements.forEach((el) => scrollObserver.observe(el));
   }
 
   // ============================================================
-  // 6. CARD SPOTLIGHT GLOW & SUBTLE 3D TILT
+  // 6. CARD SPOTLIGHT GLOW & 3D TILT (Desktop Pointer Only)
   // ============================================================
   const interactiveCards = document.querySelectorAll(
     '.skill-category, .project-card, .stat-card, .timeline-content'
   );
 
-  if (!prefersReducedMotion.matches) {
+  if (!prefersReducedMotion.matches && !isTouchDevice) {
     interactiveCards.forEach((card) => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        // Set CSS variables for radial spotlight glow
         card.style.setProperty('--mouse-x', `${x}px`);
         card.style.setProperty('--mouse-y', `${y}px`);
 
-        // Calculate subtle 3D tilt
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -3.5;
-        const rotateY = ((x - centerX) / centerX) * 3.5;
+        const rotateX = ((y - centerY) / centerY) * -3;
+        const rotateY = ((x - centerX) / centerX) * 3;
 
         card.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
       });
@@ -372,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 7. NAVBAR SCROLL EFFECT — add .scrolled class after 50px
+  // 7. NAVBAR SCROLL EFFECT
   // ============================================================
   const navbar = document.querySelector('.navbar');
 
@@ -389,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
   handleNavbarScroll();
 
   // ============================================================
-  // 8. SMOOTH SCROLL — for anchor links with fixed-nav offset
+  // 8. SMOOTH SCROLL
   // ============================================================
   const anchorLinks = document.querySelectorAll('a[href^="#"]');
 
@@ -437,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 10. SCROLL-TO-TOP BUTTON — show after 500px
+  // 10. SCROLL-TO-TOP BUTTON
   // ============================================================
   const scrollTopBtn = document.querySelector('.scroll-to-top');
 
@@ -459,7 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 11. ACTIVE NAVIGATION HIGHLIGHT — based on scroll position
+  // 11. ACTIVE NAVIGATION HIGHLIGHT
   // ============================================================
   const sections = document.querySelectorAll('section[id]');
   const navItems = document.querySelectorAll('.nav-menu .nav-link');
@@ -490,7 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
   highlightActiveNav();
 
   // ============================================================
-  // 11.5. SET CURRENT YEAR in footer
+  // 11.5. SET CURRENT YEAR
   // ============================================================
   const yearEl = document.getElementById('current-year');
   if (yearEl) {
@@ -498,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 12. COUNTER ANIMATION — count up from 0 to data-count
+  // 12. COUNTER ANIMATION
   // ============================================================
   const counters = document.querySelectorAll('.stat-number[data-count]');
 
@@ -545,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 13. CONTACT FORM HANDLING — client-side with Formspree
+  // 13. CONTACT FORM HANDLING
   // ============================================================
   const contactForm = document.querySelector('#contact-form');
 
@@ -615,7 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 14. SKILL TAGS ANIMATION — staggered pop reveal
+  // 14. SKILL TAGS ANIMATION
   // ============================================================
   const skillContainers = document.querySelectorAll('.skill-category');
 
