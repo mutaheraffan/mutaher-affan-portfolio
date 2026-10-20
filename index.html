@@ -955,86 +955,153 @@
   </footer>
 
   <!-- ============================
-       INTERACTIVE FINTECH CHARACTER
+       INTERACTIVE CHARACTER + RESUME AI CHATBOT
        ============================ -->
-  <div id="cyber-mascot" class="cyber-mascot" role="button" tabindex="0" aria-label="Interactive developer assistant — click to wave">
-    <div class="mascot-speech" id="mascot-speech">Hi! Welcome to Mutaher's Space 👋</div>
-    <svg class="mascot-svg" viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="mascotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#00d4aa" />
-          <stop offset="100%" stop-color="#7b68ee" />
-        </linearGradient>
-        <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3.5" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-      </defs>
+  <div id="ai-assistant-root" class="ai-assistant-root">
+    
+    <!-- Chat Window / Bottom Sheet on Mobile -->
+    <section id="resume-chat-window" class="resume-chat-window" role="dialog" aria-labelledby="chat-header-title" aria-hidden="true">
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-status-avatar">
+            <span class="status-dot"></span>
+            <i class="fas fa-robot" aria-hidden="true"></i>
+          </div>
+          <div>
+            <h3 id="chat-header-title" class="chat-title">Mutaher's AI Assistant</h3>
+            <span class="chat-subtitle">Synced with Resume &bull; Instant Reply</span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <a href="documents/resume.pdf" download="Mutaher-Affan-Resume.pdf" class="chat-action-btn" title="Download Full PDF Resume" aria-label="Download PDF Resume">
+            <i class="fas fa-file-download" aria-hidden="true"></i>
+          </a>
+          <button type="button" id="chat-close-btn" class="chat-action-btn" aria-label="Close chat">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+      </header>
 
-      <!-- Floating Shadow Platform -->
-      <ellipse class="mascot-shadow" cx="100" cy="196" rx="46" ry="7" fill="rgba(0, 212, 170, 0.22)" />
+      <!-- Chat Messages Body -->
+      <div id="chat-messages" class="chat-messages" aria-live="polite">
+        <!-- Initial Greeting Message -->
+        <div class="chat-msg chat-msg--bot">
+          <div class="chat-msg-bubble">
+            👋 Hi there! I'm Mutaher's virtual assistant, trained on his complete resume and project portfolio.<br><br>
+            Ask me about his <strong>current role at Systems Limited</strong>, <strong>ISO 20022 / FinTech projects</strong>, <strong>Java &amp; Spring Boot stack</strong>, or <strong>how to hire him</strong>!
+          </div>
+          <span class="chat-msg-time">Just now</span>
+        </div>
+      </div>
 
-      <!-- Left Arm (Resting) -->
-      <path d="M 55 132 Q 36 150 46 168" stroke="#1a1a2e" stroke-width="14" stroke-linecap="round" fill="none" />
-      <path d="M 55 132 Q 36 150 46 168" stroke="url(#mascotGrad)" stroke-width="3" stroke-linecap="round" fill="none" />
-      <circle cx="46" cy="168" r="8" fill="#00d4aa" />
+      <!-- Quick Prompt Chips (Scrollable horizontally on mobile) -->
+      <div class="chat-quick-chips" id="chat-quick-chips" aria-label="Suggested questions">
+        <button type="button" class="chat-chip" data-query="What is Mutaher's current role?">🏢 Current Role</button>
+        <button type="button" class="chat-chip" data-query="Tell me about his FinTech & ISO 20022 experience">💳 FinTech &amp; ISO 20022</button>
+        <button type="button" class="chat-chip" data-query="What is his technical skill stack?">⚙️ Tech Stack</button>
+        <button type="button" class="chat-chip" data-query="Tell me about the Ethiopia EthSwitch & RTGS projects">🌍 Ethiopia Projects</button>
+        <button type="button" class="chat-chip" data-query="How can I contact or hire Mutaher?">📩 Contact &amp; Resume</button>
+      </div>
 
-      <!-- Torso / Hoodie -->
-      <rect x="54" y="118" width="92" height="62" rx="26" fill="#1a1a2e" stroke="url(#mascotGrad)" stroke-width="3" />
-      <!-- Chest Code Emblem (< />) -->
-      <text x="100" y="154" font-family="Fira Code, monospace" font-size="15" font-weight="700" fill="#00d4aa" text-anchor="middle" opacity="0.9">&lt;MA/&gt;</text>
+      <!-- Chat Input Form -->
+      <form id="chat-form" class="chat-input-area" autocomplete="off">
+        <input 
+          type="text" 
+          id="chat-input" 
+          class="chat-input" 
+          placeholder="Ask anything about Mutaher's resume..." 
+          aria-label="Ask a question about Mutaher's resume"
+          required
+        >
+        <button type="submit" class="chat-send-btn" aria-label="Send question">
+          <i class="fas fa-paper-plane" aria-hidden="true"></i>
+        </button>
+      </form>
+    </section>
 
-      <!-- Head Group (Tilts & tracks cursor slightly) -->
-      <g id="mascot-head" class="mascot-head">
-        <!-- Antenna -->
-        <line x1="100" y1="36" x2="100" y2="16" stroke="#7b68ee" stroke-width="4" stroke-linecap="round" />
-        <circle class="mascot-antenna-tip" cx="100" cy="13" r="6" fill="#00d4aa" filter="url(#neonGlow)" />
+    <!-- Waving Character Launcher -->
+    <div id="cyber-mascot" class="cyber-mascot" role="button" tabindex="0" aria-expanded="false" aria-controls="resume-chat-window" aria-label="Open Mutaher's AI Resume Assistant">
+      <!-- Unread / Prompt Badge -->
+      <div class="mascot-speech" id="mascot-speech">
+        <span class="speech-dot"></span>
+        <span id="mascot-speech-text">Hi! Ask me about Mutaher 👋</span>
+      </div>
 
-        <!-- Ears / Headphones -->
-        <rect x="28" y="64" width="12" height="32" rx="6" fill="#7b68ee" />
-        <rect x="160" y="64" width="12" height="32" rx="6" fill="#7b68ee" />
+      <!-- Character SVG -->
+      <svg class="mascot-svg" viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="mascotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00d4aa" />
+            <stop offset="100%" stop-color="#7b68ee" />
+          </linearGradient>
+          <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
 
-        <!-- Head Outer -->
-        <rect x="38" y="34" width="124" height="84" rx="34" fill="#12121a" stroke="url(#mascotGrad)" stroke-width="3.5" />
+        <!-- Floating Shadow Platform -->
+        <ellipse class="mascot-shadow" cx="100" cy="196" rx="46" ry="7" fill="rgba(0, 212, 170, 0.22)" />
 
-        <!-- Face Visor Screen -->
-        <rect x="50" y="48" width="100" height="56" rx="22" fill="#0a0a0f" stroke="rgba(0, 212, 170, 0.35)" stroke-width="1.5" />
+        <!-- Left Arm (Resting) -->
+        <path d="M 55 132 Q 36 150 46 168" stroke="#1a1a2e" stroke-width="14" stroke-linecap="round" fill="none" />
+        <path d="M 55 132 Q 36 150 46 168" stroke="url(#mascotGrad)" stroke-width="3" stroke-linecap="round" fill="none" />
+        <circle cx="46" cy="168" r="8" fill="#00d4aa" />
 
-        <!-- Eyes Container -->
-        <g class="mascot-eyes">
-          <!-- Left Eye Socket -->
-          <circle cx="77" cy="74" r="14" fill="rgba(0, 212, 170, 0.1)" stroke="#00d4aa" stroke-width="1.5" />
-          <!-- Right Eye Socket -->
-          <circle cx="123" cy="74" r="14" fill="rgba(0, 212, 170, 0.1)" stroke="#00d4aa" stroke-width="1.5" />
+        <!-- Torso / Hoodie -->
+        <rect x="54" y="118" width="92" height="62" rx="26" fill="#1a1a2e" stroke="url(#mascotGrad)" stroke-width="3" />
+        <text x="100" y="154" font-family="Fira Code, monospace" font-size="14" font-weight="700" fill="#00d4aa" text-anchor="middle" opacity="0.95">AI &bull; CV</text>
 
-          <!-- Moving Pupils (Tracked by JS) -->
-          <g id="mascot-pupils">
-            <circle cx="77" cy="74" r="6.5" fill="#00d4aa" filter="url(#neonGlow)" />
-            <circle cx="75" cy="72" r="2" fill="#ffffff" />
-            <circle cx="123" cy="74" r="6.5" fill="#00d4aa" filter="url(#neonGlow)" />
-            <circle cx="121" cy="72" r="2" fill="#ffffff" />
+        <!-- Head Group (Tilts & tracks cursor/touch) -->
+        <g id="mascot-head" class="mascot-head">
+          <!-- Antenna -->
+          <line x1="100" y1="36" x2="100" y2="16" stroke="#7b68ee" stroke-width="4" stroke-linecap="round" />
+          <circle class="mascot-antenna-tip" cx="100" cy="13" r="6" fill="#00d4aa" filter="url(#neonGlow)" />
+
+          <!-- Headphones -->
+          <rect x="28" y="64" width="12" height="32" rx="6" fill="#7b68ee" />
+          <rect x="160" y="64" width="12" height="32" rx="6" fill="#7b68ee" />
+
+          <!-- Head Outer -->
+          <rect x="38" y="34" width="124" height="84" rx="34" fill="#12121a" stroke="url(#mascotGrad)" stroke-width="3.5" />
+
+          <!-- Face Visor Screen -->
+          <rect x="50" y="48" width="100" height="56" rx="22" fill="#0a0a0f" stroke="rgba(0, 212, 170, 0.35)" stroke-width="1.5" />
+
+          <!-- Eyes Container -->
+          <g class="mascot-eyes">
+            <circle cx="77" cy="74" r="14" fill="rgba(0, 212, 170, 0.1)" stroke="#00d4aa" stroke-width="1.5" />
+            <circle cx="123" cy="74" r="14" fill="rgba(0, 212, 170, 0.1)" stroke="#00d4aa" stroke-width="1.5" />
+
+            <!-- Moving Pupils -->
+            <g id="mascot-pupils">
+              <circle cx="77" cy="74" r="6.5" fill="#00d4aa" filter="url(#neonGlow)" />
+              <circle cx="75" cy="72" r="2" fill="#ffffff" />
+              <circle cx="123" cy="74" r="6.5" fill="#00d4aa" filter="url(#neonGlow)" />
+              <circle cx="121" cy="72" r="2" fill="#ffffff" />
+            </g>
+          </g>
+
+          <!-- Happy Mouth -->
+          <path id="mascot-mouth" d="M 91 92 Q 100 100 109 92" stroke="#00d4aa" stroke-width="3" stroke-linecap="round" fill="none" />
+        </g>
+
+        <!-- Right Arm (Waving Arm) -->
+        <g id="mascot-wave-arm" class="mascot-wave-arm">
+          <path d="M 145 130 Q 172 112 170 82" stroke="#1a1a2e" stroke-width="14" stroke-linecap="round" fill="none" />
+          <path d="M 145 130 Q 172 112 170 82" stroke="url(#mascotGrad)" stroke-width="3" stroke-linecap="round" fill="none" />
+          <g transform="translate(170, 78)">
+            <circle cx="0" cy="0" r="10" fill="#00d4aa" filter="url(#neonGlow)" />
+            <line x1="-5" y1="-8" x2="-8" y2="-16" stroke="#00d4aa" stroke-width="3.5" stroke-linecap="round" />
+            <line x1="0" y1="-10" x2="0" y2="-19" stroke="#00d4aa" stroke-width="3.5" stroke-linecap="round" />
+            <line x1="5" y1="-8" x2="8" y2="-16" stroke="#00d4aa" stroke-width="3.5" stroke-linecap="round" />
           </g>
         </g>
-
-        <!-- Happy Mouth -->
-        <path id="mascot-mouth" d="M 91 92 Q 100 100 109 92" stroke="#00d4aa" stroke-width="3" stroke-linecap="round" fill="none" />
-      </g>
-
-      <!-- Right Arm (Waving Arm) -->
-      <g id="mascot-wave-arm" class="mascot-wave-arm">
-        <path d="M 145 130 Q 172 112 170 82" stroke="#1a1a2e" stroke-width="14" stroke-linecap="round" fill="none" />
-        <path d="M 145 130 Q 172 112 170 82" stroke="url(#mascotGrad)" stroke-width="3" stroke-linecap="round" fill="none" />
-        <!-- Waving Hand / Palm -->
-        <g transform="translate(170, 78)">
-          <circle cx="0" cy="0" r="10" fill="#00d4aa" filter="url(#neonGlow)" />
-          <!-- Cute fingers -->
-          <line x1="-5" y1="-8" x2="-8" y2="-16" stroke="#00d4aa" stroke-width="3.5" stroke-linecap="round" />
-          <line x1="0" y1="-10" x2="0" y2="-19" stroke="#00d4aa" stroke-width="3.5" stroke-linecap="round" />
-          <line x1="5" y1="-8" x2="8" y2="-16" stroke="#00d4aa" stroke-width="3.5" stroke-linecap="round" />
-        </g>
-      </g>
-    </svg>
+      </svg>
+    </div>
   </div>
+  
 
   <!-- ============================
        SCROLL TO TOP BUTTON
